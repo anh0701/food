@@ -1,0 +1,16 @@
+services:
+  db:
+    container_name: food
+    image: docker.io/postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: food
+      POSTGRES_PASSWORD: 123
+    volumes:
+      - food:/var/lib/postgresql/data
+
+volumes:
+  food:
