@@ -4,10 +4,11 @@ import com.anh.foodsupplybe.dto.LoginDto;
 import com.anh.foodsupplybe.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     User getUser();
-    String login(LoginDto loginDto);
+    Map<String, Object> login(LoginDto loginDto);
     List<User> getAllUsers();
 }
 

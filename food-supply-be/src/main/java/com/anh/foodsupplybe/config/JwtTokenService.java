@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 
@@ -15,8 +16,11 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenService {
-    private String secretKey = "NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3NllmZHptNVVrNG9RRUs3Nl";
-    private static final long ACCESS_TOKEN_VALIDITY_SECONDS = 5*60*60;
+    @Value("${secretKey}")
+    private String secretKey;
+
+    @Value("${access_token_validity_seconds}")
+    private long ACCESS_TOKEN_VALIDITY_SECONDS;
 
     public String generateToken(String username, Set<Role> authorities) {
         return Jwts.builder().subject(username)

@@ -1,34 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Login() {
+    const router = useRouter();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
     }
-    const regexUsername = /^[A-Za-z]\w{5,29}$/;
+    const regexUsername = /^[A-Za-z0-9].{3,}$/;
     const regexPassword = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$/;
     /**
      * hanleLogin
      */
     async function hanleLogin() {
-        if(!regexUsername.test(username)){
+        if (!regexUsername.test(username)) {
             alert("username must be ...")
             return;
         }
-        if(!regexPassword.test(password)){
+        if (!regexPassword.test(password)) {
             alert("password must be ...")
             return;
         }
-        const response = await fetch("",{
+
+        const response = await fetch("http://localhost:8080/auth/login", {
             method: "POST",
-            body: JSON.stringify({username, password})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
         });
         const data = await response.json();
         console.log(data);
+        if (response.ok) {
+            router.push("Home");
+        }
+
     }
+
     const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value);
     }
