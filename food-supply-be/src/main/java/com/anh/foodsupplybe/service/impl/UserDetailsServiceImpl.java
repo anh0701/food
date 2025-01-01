@@ -1,4 +1,4 @@
-package com.anh.foodsupplybe.service;
+package com.anh.foodsupplybe.service.impl;
 
 import com.anh.foodsupplybe.model.Role;
 import com.anh.foodsupplybe.model.User;

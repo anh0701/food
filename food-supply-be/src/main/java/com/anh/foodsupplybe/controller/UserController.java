@@ -1,7 +1,7 @@
 package com.anh.foodsupplybe.controller;
 
 import com.anh.foodsupplybe.model.User;
-import com.anh.foodsupplybe.service.UserServiceImpl;
+import com.anh.foodsupplybe.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
