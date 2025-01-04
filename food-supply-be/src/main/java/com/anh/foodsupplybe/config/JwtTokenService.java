@@ -1,11 +1,13 @@
 package com.anh.foodsupplybe.config;
 
+import com.anh.foodsupplybe.model.Permission;
 import com.anh.foodsupplybe.model.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 
@@ -22,9 +24,9 @@ public class JwtTokenService {
     @Value("${access_token_validity_seconds}")
     private long ACCESS_TOKEN_VALIDITY_SECONDS;
 
-    public String generateToken(String username, Set<Role> authorities) {
+    public String generateToken(String username, Set<Permission> authorities) {
         return Jwts.builder().subject(username)
-                .claim("roles", authorities)
+                .claim("permissions", authorities)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS512)
@@ -50,5 +52,10 @@ public class JwtTokenService {
     private SecretKey getSecretKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String username = extractUsernameFromToken(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 }

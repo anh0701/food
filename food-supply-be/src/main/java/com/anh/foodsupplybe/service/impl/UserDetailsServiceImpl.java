@@ -1,6 +1,6 @@
 package com.anh.foodsupplybe.service.impl;
 
-import com.anh.foodsupplybe.model.Role;
+import com.anh.foodsupplybe.model.Permission;
 import com.anh.foodsupplybe.model.User;
 import com.anh.foodsupplybe.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,18 +17,23 @@ import java.util.stream.Collectors;
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-        @Autowired
-        private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            User user = userRepository.findByUsername(username);
-            if(user == null){
-                throw new UsernameNotFoundException("Invalid username or password.");
-            }
-            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(user.getRoles()));
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("Invalid username or password.");
         }
-
-        private List<SimpleGrantedAuthority> getAuthority(Set<Role> roles) {
-            return roles.stream().map(role -> new SimpleGrantedAuthority(role.getRole().getValue())).collect(Collectors.toUnmodifiableList());
-        }
+        Set<Permission> permissions = user.getRoles().stream().flatMap(role -> role.getPermissions().stream()).collect(Collectors.toSet());
+        List<SimpleGrantedAuthority> authorities = permissions.stream().map(permission -> new SimpleGrantedAuthority(permission.getName())).collect(Collectors.toList());
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
+
+    private List<SimpleGrantedAuthority> getAuthorities(Set<Permission> permissions) {
+        return permissions.stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
+                .collect(Collectors.toList());
+    }
+}

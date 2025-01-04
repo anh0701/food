@@ -7,6 +7,7 @@ import com.anh.foodsupplybe.model.Permission;
 import com.anh.foodsupplybe.model.Role;
 import com.anh.foodsupplybe.model.User;
 import com.anh.foodsupplybe.repo.PermissionRepository;
+import com.anh.foodsupplybe.repo.RoleRepository;
 import com.anh.foodsupplybe.repo.UserRepository;
 import com.anh.foodsupplybe.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class UserServiceImpl implements UserService {
     private AuthenticationProvider authenticationProvider;
     @Autowired
     private PermissionRepository permissionRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public Map<String, Object> login(LoginDto loginDto) {
@@ -50,9 +53,15 @@ public class UserServiceImpl implements UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final User user = userRepository.findByUsername(loginDto.getUsername());
         Map<String, Object> result = new HashMap<>();
-        result.put("token", jwtTokenService.generateToken(user.getUsername(), user.getRoles()));
         result.put("username", user.getUsername());
-        result.put("roles", user.getRoles());
+        Set<Permission> permissions = new HashSet<>();
+
+        for (Role role : user.getRoles()) {
+            permissions.addAll(role.getPermissions());
+        }
+        result.put("permissions", permissions);
+//        result.put("roles", user.getRoles());
+        result.put("token", jwtTokenService.generateToken(user.getUsername(), permissions));
         return result;
     }
 
@@ -66,30 +75,37 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> result = new HashMap<>();
         try {
 
-            User user = findUserByUsername(signUpDto.getUsername());
-            if (user != null) {
+            User userCheck = findUserByUsername(signUpDto.getUsername());
+            if (userCheck != null) {
                 throw new Exception("Username is already in use");
             }
-            Role userRole = new Role();
-            userRole.setRole(USER);
+            Permission permission = new Permission();
+            permission.setName("READ_PERMISSION");
+            Set<Permission> permissions = new HashSet<>();
+            permissions.add(permission);
 
-            Permission readPermission = new Permission();
-            readPermission.setName("read");
+            Role userRole = roleRepository.findByRole(USER);
+            if (userRole == null) {
+                userRole = new Role();
+                userRole.setRole(USER);
+                Set<Permission> userPermissions = new HashSet<>();
+                userPermissions.add(permission);
+                userRole.setPermissions(userPermissions);
+                userRole = roleRepository.save(userRole);
+            }
 
-            Set<Permission> userPermissions = new HashSet<>();
-            userPermissions.add(readPermission);
-
-            User userNew = new User();
-            userNew.setName(signUpDto.getName());
-            userNew.setUsername(signUpDto.getUsername());
-            userNew.setEmail(signUpDto.getEmail());
-            userNew.setRoles(Collections.singleton(userRole));
-            userNew.setPassword(bcryptEncoder.encode(signUpDto.getPassword()));
-            userRepository.save(userNew);
-
-            result.put("token", jwtTokenService.generateToken(userNew.getUsername(), userNew.getRoles()));
-            result.put("username", userNew.getUsername());
-            result.put("roles", userNew.getRoles());
+            User user = new User();
+            user.setUsername(signUpDto.getUsername());
+            user.setPassword(bcryptEncoder.encode(signUpDto.getPassword()));
+            user.setName(signUpDto.getUsername());
+            user.setEmail(signUpDto.getEmail());
+            Set<Role> roles = new HashSet<>();
+            roles.add(userRole);
+            user.setRoles(roles);
+            userRepository.save(user);
+//            Map<String, Object> result = new HashMap<>();
+            result.put("username", user.getUsername());
+            result.put("token", jwtTokenService.generateToken(user.getUsername(), permissions));
             return result;
         } catch (Exception e) {
             throw new RuntimeException(e);

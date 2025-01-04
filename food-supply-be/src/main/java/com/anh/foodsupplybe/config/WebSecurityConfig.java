@@ -18,9 +18,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+//@EnableMethodSecurity
 public class WebSecurityConfig {
-    private static final String[] WHITELIST_URLS = {"/auth/**"};
+    private static final String[] WHITELIST_URLS = {"/auth/**", "/invoice/**"};
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -34,7 +34,11 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 //                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(WHITELIST_URLS).permitAll().anyRequest().authenticated();
+                    auth.requestMatchers(WHITELIST_URLS).permitAll();
+                    auth.requestMatchers("/products/add").hasAuthority("PERMISSION_ADD_PRODUCT");
+                    auth.requestMatchers("/products/update").hasAuthority("PERMISSION_UPDATE_PRODUCT");
+                    auth.requestMatchers("/products/delete").hasAuthority("PERMISSION_DELETE_PRODUCT");
+                    auth.anyRequest().permitAll();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

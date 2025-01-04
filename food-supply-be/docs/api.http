@@ -25,4 +25,43 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:8080/user/get-all
 
+###
+
+POST http://localhost:8080/products/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInBlcm1pc3Npb25zIjpbeyJpZCI6MiwibmFtZSI6IlBFUk1JU1NJT05fQUREX1BST0RVQ1QifSx7ImlkIjozLCJuYW1lIjoiUEVSTUlTU0lPTl9VUERBVEVfUFJPRFVDVCJ9LHsiaWQiOjQsIm5hbWUiOiJQRVJNSVNTSU9OX0RFTEVURV9QUk9EVUNUIn0seyJpZCI6MSwibmFtZSI6IlJFQURfUEVSTUlTU0lPTiJ9XSwiaWF0IjoxNzM1OTc5OTg0LCJleHAiOjE3MzU5ODAxNjR9.zrZ6dJsVf-c12bGCCjRf6q06kRVY1P1wTDUiwm_V1-WHKJP5TxMiHNxlGbr7_3SNfdLlKdZRM0ssNWAFlEfCEQ
+
+{
+  "name": "milk",
+  "price": 30000
+}
+
+###
+GET http://localhost:8080/products/get-all
+
+###
+POST http://localhost:8080/invoice/add
+Content-Type: application/json
+
+{
+  "customerEmail": "ngocanh@gmail.com",
+  "customerName": "Nguyen Ngoc Anh",
+  "items": [
+    { "product": { "id": 1 }, "quantity": 2 },
+    { "product": { "id": 2 }, "quantity": 3 }
+  ]
+}
+
+###
+GET http://localhost:8080/invoice
+
+###
+GET http://localhost:8080/report/revenue-by-month?startDate=2024-01-01&endDate=2025-01-05
+
+###
+GET http://localhost:8080/report/revenue-by-quarter?startDate=2024-01-01&endDate=2025-01-05
+
+###
+GET http://localhost:8080/report/revenue-by-year?startDate=2024-01-01&endDate=2025-01-05
