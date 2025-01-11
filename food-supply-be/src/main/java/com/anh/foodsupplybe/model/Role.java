@@ -13,9 +13,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     @Column(name = "role_name", unique = true)
-    private RoleType role;
+    private String role;
 
     @Column(name = "description")
     private String description;
@@ -40,11 +40,11 @@ public class Role {
         this.id = id;
     }
 
-    public RoleType getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(RoleType role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

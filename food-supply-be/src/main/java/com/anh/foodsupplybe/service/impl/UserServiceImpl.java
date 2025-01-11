@@ -1,6 +1,7 @@
 package com.anh.foodsupplybe.service.impl;
 
 import com.anh.foodsupplybe.config.JwtTokenService;
+import com.anh.foodsupplybe.constants.RoleConstants;
 import com.anh.foodsupplybe.dto.LoginDto;
 import com.anh.foodsupplybe.dto.SignUpDto;
 import com.anh.foodsupplybe.model.Permission;
@@ -84,10 +85,10 @@ public class UserServiceImpl implements UserService {
             Set<Permission> permissions = new HashSet<>();
             permissions.add(permission);
 
-            Role userRole = roleRepository.findByRole(USER);
+            Role userRole = roleRepository.findByRole(RoleConstants.ROLE_USER);
             if (userRole == null) {
                 userRole = new Role();
-                userRole.setRole(USER);
+                userRole.setRole(RoleConstants.ROLE_USER);
                 Set<Permission> userPermissions = new HashSet<>();
                 userPermissions.add(permission);
                 userRole.setPermissions(userPermissions);

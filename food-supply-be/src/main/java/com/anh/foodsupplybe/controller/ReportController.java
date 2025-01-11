@@ -5,6 +5,7 @@ import com.anh.foodsupplybe.repo.InvoiceRepository;
 import com.anh.foodsupplybe.service.RevenueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,8 @@ public class ReportController {
     private InvoiceRepository invoiceRepository;
 
     @GetMapping("/revenue-by-month")
+    @PreAuthorize("hasAuthority('GET_REPORT')")
+
     public ResponseEntity<Map<YearMonth, Double>> getRevenueByMonth(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -34,6 +37,8 @@ public class ReportController {
     }
 
     @GetMapping("/revenue-by-year")
+    @PreAuthorize("hasAuthority('GET_REPORT')")
+
     public ResponseEntity<Map<Integer, Double>> getRevenueByYear(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {
@@ -44,6 +49,8 @@ public class ReportController {
     }
 
     @GetMapping("/revenue-by-quarter")
+    @PreAuthorize("hasAuthority('GET_REPORT')")
+
     public ResponseEntity<Map<Integer, Double>> getRevenueByQuarter(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate) {

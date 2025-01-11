@@ -10,13 +10,37 @@ public class InvoiceItem {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "invoice_id" )
-    @JsonBackReference
+//    @JsonBackReference
     private Invoice invoice;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-    private int quantity;
+    private double quantity; // Số lượng sản phẩm
+//    private double price; // Giá sản phẩm (đã áp dụng giảm giá)
+//    private double discountedPrice; // Giá sau giảm giá (lưu cố định)
+//    private double discountAmount; // Tổng giảm giá cho sản phẩm (nếu có)
+
     private double subtotal;
+
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
+    }
+
+//    public double getDiscountedPrice() {
+//        return discountedPrice;
+//    }
+//
+//    public void setDiscountedPrice(double discountedPrice) {
+//        this.discountedPrice = discountedPrice;
+//    }
+//
+//    public double getPrice() {
+//        return price;
+//    }
+//
+//    public void setPrice(double price) {
+//        this.price = price;
+//    }
 
     public InvoiceItem(Long id, Invoice invoice, Product product, int quantity, double subtotal) {
         this.id = id;
@@ -53,12 +77,8 @@ public class InvoiceItem {
         this.product = product;
     }
 
-    public int getQuantity() {
+    public double getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public double getSubtotal() {

@@ -10,6 +10,11 @@ public class Permission {
     @Column(nullable = false)
     private String name;
 
+    public Permission(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Permission() {
     }
 

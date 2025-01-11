@@ -46,13 +46,23 @@ POST http://localhost:8080/invoice/add
 Content-Type: application/json
 
 {
-  "customerEmail": "ngocanh@gmail.com",
-  "customerName": "Nguyen Ngoc Anh",
+  "customerEmail": "k@example.com",
+  "customerName": "Customer Name",
+  "invoiceDiscountId": 1,
   "items": [
-    { "product": { "id": 1 }, "quantity": 2 },
-    { "product": { "id": 2 }, "quantity": 3 }
+    {
+      "product": { "id": 1 },
+      "quantity": 2,
+      "productDiscountId": 1
+    },
+    {
+      "product": { "id": 2 },
+      "quantity": 3,
+      "productDiscountId": 2
+    }
   ]
 }
+
 
 ###
 GET http://localhost:8080/invoice
@@ -65,3 +75,45 @@ GET http://localhost:8080/report/revenue-by-quarter?startDate=2024-01-01&endDate
 
 ###
 GET http://localhost:8080/report/revenue-by-year?startDate=2024-01-01&endDate=2025-01-05
+
+###
+GET http://localhost:8080/discount-history/invoice/1
+
+###
+GET  http://localhost:8080/discount
+
+###
+POST http://localhost:8080/discount/add
+Content-Type: application/json
+
+{
+  "value": 10000,
+  "type": "AMOUNT"
+}
+
+###
+GET http://localhost:8080/permission
+
+###
+
+POST http://localhost:8080/permission/add
+Content-Type: application/json
+
+{
+  "name": "ADD_PERMISSION"
+}
+
+###
+POST http://localhost:8080/role/add
+Content-Type: application/json
+
+{
+  "role": "Sale",
+  "description": "",
+  "permissions": [
+    {"id": 2}
+  ]
+}
+
+###
+GET http://localhost:8080/role

@@ -15,18 +15,36 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 @Configuration
 @EnableWebSecurity
 //@EnableMethodSecurity
 public class WebSecurityConfig {
-    private static final String[] WHITELIST_URLS = {"/auth/**", "/invoice/**"};
+    private static final String[] WHITELIST_URLS = {"/auth/**"};
 
     @Autowired
     private UserDetailsService userDetailsService;
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthFilter;
+
+    private static final Map<String, String> pathPermissionsMap = new HashMap<>();
+
+    static {
+        pathPermissionsMap.put("/products/add", "ADD_PRODUCT");
+        pathPermissionsMap.put("/products/update", "UPDATE_PRODUCT");
+        pathPermissionsMap.put("/products/delete", "DELETE_PRODUCT");
+        pathPermissionsMap.put("/products/get-all", "GET_PRODUCT");
+        pathPermissionsMap.put("/discount/", "GET_DISCOUNT");
+        pathPermissionsMap.put("/discount/add", "ADD_DISCOUNT");
+        pathPermissionsMap.put("/discount-history/**", "GET_HISTORY_DISCOUNT");
+        pathPermissionsMap.put("/invoice/add", "ADD_INVOICE");
+        pathPermissionsMap.put("/invoice/", "GET_INVOICE");
+        pathPermissionsMap.put("/report/**", "GET_REPORT");
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,9 +53,13 @@ public class WebSecurityConfig {
 //                .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(WHITELIST_URLS).permitAll();
-                    auth.requestMatchers("/products/add").hasAuthority("PERMISSION_ADD_PRODUCT");
-                    auth.requestMatchers("/products/update").hasAuthority("PERMISSION_UPDATE_PRODUCT");
-                    auth.requestMatchers("/products/delete").hasAuthority("PERMISSION_DELETE_PRODUCT");
+                    pathPermissionsMap.forEach((path, permissions) -> {
+                        if (permissions.isEmpty()) {
+                            auth.requestMatchers(path).permitAll();
+                        } else {
+                            auth.requestMatchers(path).hasAnyAuthority(permissions);
+                        }
+                    });
                     auth.anyRequest().permitAll();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

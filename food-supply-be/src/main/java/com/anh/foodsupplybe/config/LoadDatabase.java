@@ -1,5 +1,6 @@
 package com.anh.foodsupplybe.config;
 
+import com.anh.foodsupplybe.constants.RoleConstants;
 import com.anh.foodsupplybe.model.Permission;
 import com.anh.foodsupplybe.model.Product;
 import com.anh.foodsupplybe.model.Role;
@@ -16,10 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-import static com.anh.foodsupplybe.model.RoleType.ADMIN;
-import static com.anh.foodsupplybe.model.RoleType.USER;
 
 @Configuration
 public class LoadDatabase {
@@ -35,54 +34,41 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository, RoleRepository roleRepository) {
         return args -> {
-
-            productRepository.save(new Product(null, "Product 1", 2000));
-            productRepository.save(new Product(null, "Product 2", 30000));
-            productRepository.save(new Product(null, "Product 3", 4000));
-            Permission readPermission = permissionRepository.findByName("READ_PERMISSION");
-            if (readPermission == null) {
-                readPermission = new Permission();
-                readPermission.setName("READ_PERMISSION");
-                readPermission = permissionRepository.save(readPermission);
-            }
-            Permission writePermission = permissionRepository.findByName("PERMISSION_ADD_PRODUCT");
-            if (writePermission == null) {
-                writePermission = new Permission();
-                writePermission.setName("PERMISSION_ADD_PRODUCT");
-                writePermission = permissionRepository.save(writePermission);
+            if (productRepository.findAll().isEmpty()) {
+                productRepository.save(new Product(null, "Product 1", 2000));
+                productRepository.save(new Product(null, "Product 2", 30000));
+                productRepository.save(new Product(null, "Product 3", 4000));
             }
 
-            Permission updatePermission = permissionRepository.findByName("PERMISSION_UPDATE_PRODUCT");
-            if (updatePermission == null) {
-                updatePermission = new Permission();
-                updatePermission.setName("PERMISSION_UPDATE_PRODUCT");
-                updatePermission = permissionRepository.save(updatePermission);
+            if (permissionRepository.findAll().isEmpty()) {
+                permissionRepository.save(new Permission(null, "GET_PRODUCT"));
+                permissionRepository.save(new Permission(null, "ADD_PRODUCT"));
+                permissionRepository.save(new Permission(null, "DELETE_PRODUCT"));
+                permissionRepository.save(new Permission(null, "UPDATE_PRODUCT"));
+                permissionRepository.save(new Permission(null, "GET_DISCOUNT"));
+                permissionRepository.save(new Permission(null, "ADD_DISCOUNT"));
+                permissionRepository.save(new Permission(null, "GET_HISTORY_DISCOUNT"));
+                permissionRepository.save(new Permission(null, "ADD_INVOICE"));
+                permissionRepository.save(new Permission(null, "GET_INVOICE"));
+                permissionRepository.save(new Permission(null, "GET_REPORT"));
             }
 
-            Permission deleteProduct = permissionRepository.findByName("PERMISSION_DELETE_PRODUCT");
-            if (deleteProduct == null) {
-                deleteProduct = new Permission();
-                deleteProduct.setName("PERMISSION_DELETE_PRODUCT");
-                deleteProduct = permissionRepository.save(deleteProduct);
-            }
+            Permission readPermission = permissionRepository.findByName("GET_PRODUCT");
 
-            Role adminRole = roleRepository.findByRole(ADMIN);
+            Role adminRole = roleRepository.findByRole(RoleConstants.ROLE_ADMIN);
             if (adminRole == null) {
                 adminRole = new Role();
-                adminRole.setRole(ADMIN);
-                Set<Permission> adminPermissions = new HashSet<>();
-                adminPermissions.add(readPermission);
-                adminPermissions.add(writePermission);
-                adminPermissions.add(updatePermission);
-                adminPermissions.add(deleteProduct);
+                adminRole.setRole(RoleConstants.ROLE_ADMIN);
+                List<Permission> permissionsList =  permissionRepository.findAll();
+                Set<Permission> adminPermissions = new HashSet<>(permissionsList);
                 adminRole.setPermissions(adminPermissions);
                 adminRole = roleRepository.save(adminRole);
             }
 
-            Role userRole = roleRepository.findByRole(USER);
+            Role userRole = roleRepository.findByRole(RoleConstants.ROLE_USER);
             if (userRole == null) {
                 userRole = new Role();
-                userRole.setRole(USER);
+                userRole.setRole(RoleConstants.ROLE_USER);
                 Set<Permission> userPermissions = new HashSet<>();
                 userPermissions.add(readPermission);
                 userRole.setPermissions(userPermissions);
@@ -97,7 +83,7 @@ public class LoadDatabase {
             roles.add(adminRole);
             roles.add(userRole);
             admin.setRoles(roles);
-            admin.setPassword(passwordEncoder.encode("Admin123@"));
+            admin.setPassword(passwordEncoder.encode("adminpass"));
             userRepository.save(admin);
 
             User user = new User();
