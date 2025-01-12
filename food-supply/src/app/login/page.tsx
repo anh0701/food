@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -8,7 +9,7 @@ export default function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    
+
     const [errors, setErrors] = useState({
         username: '',
         password: '',
@@ -51,7 +52,7 @@ export default function Login() {
         console.log(data);
 
         if (response.ok) {
-            router.push("/");  
+            router.push("/");
         }
     }
 
@@ -61,9 +62,9 @@ export default function Login() {
 
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>, targetRef: React.RefObject<HTMLInputElement | null>) => {
         if (event.key === "Enter") {
-            event.preventDefault(); 
+            event.preventDefault();
             if (targetRef.current) {
-                targetRef.current.focus(); 
+                targetRef.current.focus();
             }
         }
     };
@@ -71,41 +72,55 @@ export default function Login() {
     const handlePasswordKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
             event.preventDefault();
-            handleLogin(); 
+            handleLogin();
         }
     };
 
+    const handleSignUp = () => {
+        router.push("/sign-up");
+    };
+
     return (
-        <div className="w-screen h-screen flex flex-col justify-center items-center bg-blue-400">
+        <div className="w-screen flex flex-col justify-center items-center bg-blue-400">
             <div className="w-1/4 bg-white rounded-2xl flex flex-col justify-center items-center gap-2 p-8 shadow-md">
                 <div className="mb-4 text-center font-bold text-2xl w-full">Login</div>
 
-                    <input 
-                        type="text" 
-                        placeholder="Username" 
-                        className="w-full bg-slate-200 rounded-md p-2 mb-2" 
-                        onChange={handleUsernameChange}  
-                        onKeyDown={(e) => handleKeyDown(e, passwordInputRef)} 
-                    />
-                    {errors.username && <div className="text-red-500 text-sm mb-2 break-words whitespace-normal w-full">{errors.username}</div>}
+                <input
+                    type="text"
+                    placeholder="Username"
+                    className="w-full bg-slate-200 rounded-md p-2 mb-2"
+                    onChange={handleUsernameChange}
+                    onKeyDown={(e) => handleKeyDown(e, passwordInputRef)}
+                />
+                {errors.username && <div className="text-red-500 text-sm mb-2 break-words whitespace-normal w-full">{errors.username}</div>}
 
-                    <input 
-                        type="password" 
-                        placeholder="Password" 
-                        className="w-full bg-slate-200 rounded-md p-2 mb-2" 
-                        ref={passwordInputRef} 
-                        onChange={handlePasswordChange} 
-                        onKeyDown={handlePasswordKeyDown} 
-                    />
-                    {errors.password && <div className="text-red-500 text-sm mb-2 break-words whitespace-normal w-full">{errors.password}</div>}
+                <input
+                    type="password"
+                    placeholder="Password"
+                    className="w-full bg-slate-200 rounded-md p-2 mb-2"
+                    ref={passwordInputRef}
+                    onChange={handlePasswordChange}
+                    onKeyDown={handlePasswordKeyDown}
+                />
+                {errors.password && <div className="text-red-500 text-sm mb-2 break-words whitespace-normal w-full">{errors.password}</div>}
 
-              
-                <button 
-                    className="w-full p-2 bg-blue-400 rounded-md text-white hover:bg-blue-500 transition-colors duration-300" 
+
+                <button
+                    className="w-full p-2 bg-blue-400 rounded-md text-white hover:bg-blue-500 transition-colors duration-300"
                     onClick={handleLogin}
                 >
                     Login
                 </button>
+
+                <Link href="/forgot-password" className="text-sm text-indigo-600 hover:text-indigo-500">
+                    Forgotten password?
+                </Link>
+                
+                <div className="mt-4 text-center">
+                    <p className="text-sm text-gray-600">Don't have an account?
+                        <Link href="/sign-up" className="text-indigo-600 hover:text-indigo-500">Sign up</Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

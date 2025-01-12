@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function Banner() {
     return (
-        <div className="bg-[#FFB30E] w-screen grid grid-cols-3 space-x-4 h-full">
+        <div className="bg-[#FFB30E] w-screen grid grid-cols-3 space-x-4 h-screen">
 
             <div className="w-full col-span-2 p-4 flex flex-col justify-center items-center">
 

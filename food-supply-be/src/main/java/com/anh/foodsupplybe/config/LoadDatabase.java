@@ -83,7 +83,7 @@ public class LoadDatabase {
             roles.add(adminRole);
             roles.add(userRole);
             admin.setRoles(roles);
-            admin.setPassword(passwordEncoder.encode("adminpass"));
+            admin.setPassword(passwordEncoder.encode("Admin123@"));
             userRepository.save(admin);
 
             User user = new User();

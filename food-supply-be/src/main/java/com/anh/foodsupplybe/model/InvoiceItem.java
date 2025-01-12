@@ -10,7 +10,7 @@ public class InvoiceItem {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "invoice_id" )
-//    @JsonBackReference
+    @JsonBackReference
     private Invoice invoice;
     @ManyToOne
     @JoinColumn(name = "product_id")

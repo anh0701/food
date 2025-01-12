@@ -20,16 +20,16 @@ export default function Menu() {
         router.push("/login");
     };
 
-    const handleSignUp = () => {
-        router.push("/sign-up");
-    };
+    // const handleSignUp = () => {
+    //     router.push("/sign-up");
+    // };
 
-    const goHome = () => {
-        router.push("/");
-    };
+    // const goHome = () => {
+    //     router.push("/");
+    // };
 
     return (
-        <div className="p-4 shadow-lg w-screen h-full">
+        <div className="sticky top-0 z-10 bg-white p-4 shadow-lg w-screen">
             <div className="max-w-6xl mx-auto flex justify-between items-center">
 
                 <div className="flex gap-3 justify-center items-center">
