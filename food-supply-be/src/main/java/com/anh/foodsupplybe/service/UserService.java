@@ -17,5 +17,7 @@ public interface UserService {
     Map<String, Object> signUp(SignUpDto signUpDto);
 
     User findUserByUsername(String username);
+
+    void updateUserStats(Long userId, Double orderAmount);
 }
 

@@ -4,9 +4,11 @@ import com.anh.foodsupplybe.config.JwtTokenService;
 import com.anh.foodsupplybe.constants.RoleConstants;
 import com.anh.foodsupplybe.dto.LoginDto;
 import com.anh.foodsupplybe.dto.SignUpDto;
+import com.anh.foodsupplybe.model.MemberLevel;
 import com.anh.foodsupplybe.model.Permission;
 import com.anh.foodsupplybe.model.Role;
 import com.anh.foodsupplybe.model.User;
+import com.anh.foodsupplybe.repo.MemberLevelRepository;
 import com.anh.foodsupplybe.repo.PermissionRepository;
 import com.anh.foodsupplybe.repo.RoleRepository;
 import com.anh.foodsupplybe.repo.UserRepository;
@@ -42,6 +44,8 @@ public class UserServiceImpl implements UserService {
     private PermissionRepository permissionRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private MemberLevelRepository memberLevelRepository;
 
     @Override
     public Map<String, Object> login(LoginDto loginDto) {
@@ -116,6 +120,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public void updateUserStats(Long userId, Double orderAmount) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setTotalSpent(user.getTotalSpent() + orderAmount);
+        user.setTotalPurchases(user.getTotalPurchases() + 1);
+        upgradeMemberLevel(user);
+        userRepository.save(user);
+    }
+
+    private void upgradeMemberLevel(User user) {
+        MemberLevel currentLevel = user.getMemberLevel();
+
+        List<MemberLevel> memberLevels = memberLevelRepository.findAll();
+        memberLevels.sort(Comparator.comparingDouble(MemberLevel::getMinSpent));
+
+        for (int i = 0; i < memberLevels.size(); i++) {
+            MemberLevel nextLevel = memberLevels.get(i);
+
+            if (user.getTotalSpent() >= nextLevel.getMinSpent() &&
+                    user.getTotalPurchases() >= nextLevel.getMinPurchases()) {
+
+                if (currentLevel == null || nextLevel.getMinSpent() > currentLevel.getMinSpent()) {
+                    user.setMemberLevel(nextLevel);
+                    break;
+                }
+            }
+        }
+        userRepository.save(user);
     }
 
     @Override

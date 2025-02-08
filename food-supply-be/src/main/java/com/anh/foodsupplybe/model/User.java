@@ -21,11 +21,45 @@ public class User {
     @JsonIgnore
     private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_level_id")
+    private MemberLevel memberLevel;
+
+    @Column
+    private Double totalSpent = 0.0;
+
+    @Column
+    private Integer totalPurchases = 0;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = {
             @JoinColumn(name = "user_id") }, inverseJoinColumns = {
             @JoinColumn(name = "role_id") })
     private Set<Role> roles;
+
+    public MemberLevel getMemberLevel() {
+        return memberLevel;
+    }
+
+    public void setMemberLevel(MemberLevel memberLevel) {
+        this.memberLevel = memberLevel;
+    }
+
+    public Double getTotalSpent() {
+        return totalSpent;
+    }
+
+    public void setTotalSpent(Double totalSpent) {
+        this.totalSpent = totalSpent;
+    }
+
+    public Integer getTotalPurchases() {
+        return totalPurchases;
+    }
+
+    public void setTotalPurchases(Integer totalPurchases) {
+        this.totalPurchases = totalPurchases;
+    }
 
     public long getId() {
         return id;
