@@ -1,1 +1,19 @@
-npm test
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+echo "Running pre-commit checks..."
+
+# Run lint-staged
+echo "Running lint-staged..."
+npm run lint
+LINT_STAGED_RESULT=$?
+
+if [ $LINT_STAGED_RESULT -ne 0 ]; then
+  echo "${RED}❌ Lint-staged failed. Please fix the linting issues before committing.${NC}"
+  exit 1
+fi
