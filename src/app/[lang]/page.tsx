@@ -1,5 +1,5 @@
-import Banner from "@/components/banner/page";
-import Menu from "@/components/menu/page";
+import Banner from "@/components/organisms/banner/page";
+import Menu from "@/components/organisms/menu/page";
 
 export default function Home() {
   return (

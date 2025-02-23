@@ -10,8 +10,10 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@formatjs/intl-localematcher": "^0.6.0",
     "eslint": "^9.17.0",
     "husky": "^8.0.0",
+    "negotiator": "^1.0.0",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
