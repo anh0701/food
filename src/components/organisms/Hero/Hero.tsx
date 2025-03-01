@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import SearchBar from "@/components/molecules/SearchBar";
+import SearchBar from "@/components/molecules/search-bar";
 import { Dictionary } from "@/types/dictionary";
 
 const Hero: React.FC<{ dictionary: Dictionary }> =  ({ dictionary }) => {

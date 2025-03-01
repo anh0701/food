@@ -2,7 +2,7 @@
 import { getDictionary } from '@/get-dictionary'
 import { Locale } from '@/i18n-config'
 import React, { useEffect, useState } from 'react'
-import SearchBar from '../../molecules/SearchBar'
+import SearchBar from '../../molecules/search-bar'
 
 interface Product {
   id: number
